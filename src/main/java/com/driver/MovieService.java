@@ -1,75 +1,50 @@
+
 package com.driver;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import java.util.*;
 
-import java.util.List;
-import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
-
 public class MovieService {
+
     @Autowired
     MovieRepository movieRepository;
 
-    public Boolean addMovie(@RequestBody Movie movie) {
-        Optional<Movie> movieOptional = movieRepository.getMovieByName(movie.getName());
-        if (movieOptional.isPresent()){
-            throw new MovieAlreadyExistsException(movie.getName());
-        }
-        return movieRepository.addMovie(movie);
+    public void addMovie(Movie movie){
+        movieRepository.saveMovie(movie);
     }
 
-    public Boolean addDirector(@RequestBody Director director) {
-        Optional<Director> directorOptional = movieRepository.getDirectorByName(director.getName());
-        if (directorOptional.isPresent()){
-            throw new MovieAlreadyExistsException(director.getName());
-        }
-        return movieRepository.addDirector(director);
+    public void addDirector(Director director){
+        movieRepository.saveDirector(director);
     }
 
-    public String addMovieDirectorPair(@RequestParam String movieName, @RequestParam String directorName) {
-        return movieRepository.addMovieDirectorPair(movieName, directorName);
+    public void createMovieDirectorPair(String movie, String director){
+        movieRepository.saveMovieDirectorPair(movie, director);
     }
 
-    public Movie getMovieByName(@RequestParam String name) {
-        Optional<Movie> movieOptional = movieRepository.getMovieByName(name);
-        if (movieOptional.isEmpty()){
-            throw new MovieNotFoundException(name);
-        }
-        return movieOptional.get();
+    public Movie findMovie(String movieName){
+        return movieRepository.findMovie(movieName);
     }
 
-    public Director getDirectorByName(@RequestParam String name) {
-        Optional<Director> directorOptional = movieRepository.getDirectorByName(name);
-        if (directorOptional.isEmpty()){
-            throw new DirectorNotFoundException(name);
-        }
-        return directorOptional.get();
+    public Director findDirector(String directorName){
+        return movieRepository.findDirector(directorName);
     }
 
-    public List<String> getMoviesByItsDirectorName(@RequestParam String directorName) {
-        return movieRepository.getMoviesByItsDirectorName(directorName);
+    public List<String> findMoviesFromDirector(String director){
+        return movieRepository.findMoviesFromDirector(director);
     }
 
-    public List<String> findAllMovies() {
-        return movieRepository.getAllMovies();
+    public List<String> findAllMovies(){
+        return movieRepository.findAllMovies();
     }
 
-    public void deleteDirectorByName(@RequestParam String directorName) {
-        movieRepository.deleteDirectorByName(directorName);
+    public void deleteDirector(String director){
+        movieRepository.deleteDirector(director);
     }
 
-    public void deleteAllDirectors() {
-        movieRepository.deleteAllDirectors();
+    public void deleteAllDirectors(){
+        movieRepository.deleteAllDirector();
     }
-
-
-    //getMoviesByDirectorName
-    //findAllMovies
-    //deleteDirectorByName
-    //deleteAllDirectors
 }
